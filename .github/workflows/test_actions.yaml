@@ -1,0 +1,105 @@
+name: Python Flask Test
+
+on: 
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+  workflow_dispatch:
+    inputs:
+      python_version:
+        type: choice
+        description: 'Python version'
+        required: true
+        default: '3.12' # Default Python version
+        options:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
+permissions: write-all
+
+jobs:
+  unittest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python_version }}
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: |
+        python -m unittest discover -s tests -p '*_test.py'
+
+    # - name: notify slack - fail
+    # id: slack-fail
+    # uses: slackapi/slack-github-action@v1.24.0
+    # if: ${{ failure() }}
+    # with:
+    #   channel-id: '' # slack channel 
+    #   payload: |
+    #     {
+    #       "text": "GitHub Action failed",
+    #       "blocks": [
+    #         {
+    #           "type": "section",
+    #           "text": {
+    #             "type": "mrkdwn",
+    #             "text": "Python Test on Version ${{ inputs.python_version }} is *`FAILED`*, please check the Test output direcltly in the Pipeline through the link below! :scream:\n Please check! :arrow_heading_down:"
+    #           }
+    #         },
+    #         {
+    #           "type": "actions",
+    #           "elements": [
+    #             {
+    #               "type": "button",
+    #               "text": {
+    #                 "type": "plain_text",
+    #                 "text": ":link: Failed action"
+    #               },
+    #               "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    #             }
+    #           ]
+    #         }
+    #       ]
+    #     }
+    # env:
+    #   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    #   SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+    # - name: notify slack - success
+    #   id: slack-ok
+    #   uses: slackapi/slack-github-action@v1.24.0
+    #   if: ${{ success() }}
+    #   with:
+    #     channel-id: '' # slack channel 
+    #     payload: |
+    #       {
+    #         "text": "GitHub Action success",
+    #         "blocks": [
+    #           {
+    #             "type": "section",
+    #             "text": {
+    #               "type": "mrkdwn",
+    #               "text": "Python Test on Version ${{ inputs.python_version }} is *`SUCCEEDED`* :tada:"
+    #             }
+    #           }
+    #         ]
+    #       }
+    #   env:
+    #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    #     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

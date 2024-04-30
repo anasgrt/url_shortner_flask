@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">    
+<head>        
+    <meta charset="utf-8">        
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">        
+    <title>URL Shortner</title>
+</head>
+<body>        
+        <h1>Anas's URL Shortener</h1>    
+        <form method="POST" action="{{ url_for('index') }}">
+            <input type="url" name="long_url" placeholder="Enter the long URL" pattern="https://.*" size="50" required>
+            <button type="submit"> shorten </button>
+        </form>       
+</body>
+</html>
