@@ -39,7 +39,12 @@ def index():
 
         while shortcode in shortened_urls:
             shortcode = generate_short_url()
-        shortened_urls[shortcode] = long_url
+        shortened_urls[shortcode] = {
+            "url": long_url,
+            "created": datetime.now(),
+            "last_redirect": datetime.now(),
+            "redirect_count": 0
+        }
         return f"Shortened URL: {request.url_root}{shortcode}", 201
     return render_template("index.html")
 
@@ -47,7 +52,10 @@ def index():
 def redirect_to_url(shortcode):
     long_url = shortened_urls.get(shortcode)
     if long_url:
-        return redirect(long_url, code=302)
+        # Update the last redirect time and increment the redirect count
+        long_url['last_redirect'] = datetime.now()
+        long_url['redirect_count'] += 1
+        return redirect(long_url['url'], code=302)
     else:
         return f"No URL found for {shortcode}", 404
     
