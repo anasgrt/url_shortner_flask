@@ -47,7 +47,7 @@ class TestShortURLApp(unittest.TestCase):
     def test_redirect_to_url(self):
         shortcode = generate_short_url()
         shortened_urls[shortcode] = 'https://www.example.com'
-        response = self.app.get('yTkkTC')
+        response = self.app.get('ewx123')
         self.assertEqual(response.status_code, 302)
         self.assertIn(b'https://www.example.com', response.data)
 
