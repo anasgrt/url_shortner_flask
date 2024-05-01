@@ -47,7 +47,7 @@ def index():
 def redirect_to_url(shortcode):
     long_url = shortened_urls.get(shortcode)
     if long_url:
-        return redirect(long_url)
+        return redirect(long_url, code=302)
     else:
         return f"No URL found for {shortcode}", 404
     
